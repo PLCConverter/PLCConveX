@@ -1,0 +1,57 @@
+<project>
+  <fileHeader companyName="hty" productName="luckyyou" productVersion="1" creationDateTime="2025-03-10T15:45:21" />
+  <contentHeader name="twetrttr" modificationDateTime="2025-03-11T20:59:58">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="10" y="10" />
+      </fbd>
+      <ld>
+        <scaling x="10" y="10" />
+      </ld>
+      <sfc>
+        <scaling x="10" y="10" />
+      </sfc>
+    </coordinateInfo>
+  </contentHeader>
+  <types>
+    <dataTypes>
+
+    </dataTypes>
+    <pous>
+
+    </pous>
+  </types>
+  <instances>
+    <configurations>
+      <configuration name="Config0">
+        <resource name="Res0">
+          <task name="task0" priority="0" interval="T#20ms">
+            <pouInstance name="instance0" typeName="PLC_PRG" />
+          </task>
+
+        <globalVars retain="true"><variable name="con1">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="TRUE" />
+                    </initialValue>
+                  </variable>
+                </globalVars><globalVars constant="true"><variable name="con2">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="TRUE" />
+                    </initialValue>
+                  </variable>
+                </globalVars><globalVars><variable name="norm1">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </globalVars></resource>
+      </configuration>
+    </configurations>
+  </instances>
+</project>

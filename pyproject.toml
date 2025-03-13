@@ -1,0 +1,31 @@
+[project]
+name = "PLCConveX"
+version = "0.1.0"
+description = "A project for processing PLC-related XML files"
+
+requires-python = ">=3.8"
+dependencies = [
+    "pip",
+    "lxml",
+    "wheel",
+    "setuptools",
+]
+
+[tool.uv]
+managed = true
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+stage1 = "Stage1.preprocess:main"
+ld-block = "LD.Block.test:main"
+ld-locate = "LD.Locate.test:main"
+stage3 = "Stage3.assemble:main"

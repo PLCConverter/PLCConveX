@@ -1,0 +1,22 @@
+<resource><globalVars retain="true"><variable name="con1">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="TRUE" />
+                    </initialValue>
+                  </variable>
+                </globalVars><globalVars constant="true"><variable name="con2">
+                    <type>
+                      <BOOL />
+                    </type>
+                    <initialValue>
+                      <simpleValue value="TRUE" />
+                    </initialValue>
+                  </variable>
+                </globalVars><globalVars><variable name="norm1">
+                    <type>
+                      <INT />
+                    </type>
+                  </variable>
+                </globalVars></resource>
