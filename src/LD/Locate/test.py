@@ -1,8 +1,15 @@
 import sys
 sys.path.append('..')
+import argparse
 
 import xml.etree.ElementTree as ET
-from .Locate import Locator
+from LD.Locate.Locate import Locator
+
+DEFAULT_INPUT = 'LD/Inters/intermediate.xml'
+DEFAULT_OUTPUT = 'LD/Outputs/LD_CONVERTED.xml'
+
+from Logs.colorLogger import get_color_logger
+logger = get_color_logger("Locate/test.py")
 
 xml_string = '''<pou name="program0" pouType="program">
         <interface>
@@ -120,7 +127,7 @@ def ensure_required_structure(elem: ET.Element, spec: dict):
     required_attrs = spec.get('attributes', {})
     for attr, default_val in required_attrs.items():
         if attr not in elem.attrib:
-            print(f"Adding missing attribute '{attr}' to <{elem.tag}> with default value '{default_val}'.")
+            logger.debug(f"Adding missing attribute '{attr}' to <{elem.tag}> with default value '{default_val}'.")
             elem.attrib[attr] = default_val
 
     # Ensure required children
@@ -129,7 +136,7 @@ def ensure_required_structure(elem: ET.Element, spec: dict):
     for child_tag, child_spec in required_children.items():
         child = elem.find(child_tag)
         if child is None:
-            print(f"Adding missing child <{child_tag}> to <{elem.tag}>.")
+            logger.debug(f"Adding missing child <{child_tag}> to <{elem.tag}>.")
             child = ET.Element(child_tag)
             # get the index of current child
             index = spec['order'].index(child_tag)
@@ -161,10 +168,10 @@ def patch_tree(root: ET.Element, spec_map: dict):
     for child in root:
         patch_tree(child, spec_map)
 
-def main():
+def process_xml(input_file, output_file):
     # Read the XML (either from a file or a string)
-    input_path = 'LD/Inters/intermediate.xml'
-    with open(input_path, 'r', encoding='utf-8') as f:
+    
+    with open(input_file, 'r', encoding='utf-8') as f:
         xml_string = f.read()
 
     root = ET.fromstring(xml_string.strip())
@@ -174,7 +181,29 @@ def main():
     locator.locate()
     patch_tree(root, REQUIRED_SPEC)
 
-    output_path = 'LD/Outputs/LD_BASIC_CONVERTED.xml'
     # clear the file and write the new content
-    with open(output_path, 'w', encoding='utf-8') as f:
+    with open(output_file, 'w', encoding='utf-8') as f:
         f.write(ET.tostring(root, encoding='unicode').strip())
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Process XML file by removing unsupported elements and converting formal parameters."
+    )
+    parser.add_argument(
+        '-i', '--input',
+        default=DEFAULT_INPUT,
+        help='Input XML file path (default: %(default)s)'
+    )
+    parser.add_argument(
+        '-o','--output',
+        default=DEFAULT_OUTPUT,
+        help='Output XML file path (default: %(default)s)'
+    )
+    args = parser.parse_args()
+    if args.input != DEFAULT_INPUT and args.output == DEFAULT_OUTPUT:
+        args.output = args.input.replace("_intermediate", "_out").replace("Inters", "Outputs")
+        logger.debug(f"Output file path: {args.output}")
+    process_xml(args.input, args.output)
+
+if __name__ == "__main__":
+    main()

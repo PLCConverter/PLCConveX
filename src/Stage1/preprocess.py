@@ -1,24 +1,78 @@
 import sys
 sys.path.append("../")
-
+import os
 from LD.Schema.Elements import Type, Variable
 import xml.etree.ElementTree as ET
 
+from enum import Enum
 
 from Logs.colorLogger import get_color_logger
 logger = get_color_logger("PREPROCESS")
 
 # Define the elements to be removed
 # !!! WARNING: vendorElement maybe reinstated in the future !!!
+class LanCategory(Enum):
+    """Enumeration of the different PLC languages."""
+    LD = "LD"
+    FBD = "FBD"
+    IL = "IL"
+    SFC = "SFC"
+    ST = "ST"
+
 GLOBAL_SLASH_LIST = ["addData", "rightPowerRail", "vendorElement"]
+LD_OUTPUT_DIR = "LD/Inputs"
+ST_OUTPUT_DIR = "ST/Inputs" 
+
 gv_root = ET.Element("resource")
 # Load the XML file
-input_file = "../data/Inputs/VAR_1.xml"
-output_file = "../LD/Inters/preprocess.xml"
+input_file = "../data/Inputs/LD_FB_FULL.xml"
 var_output = "../data/Inters/vars.xml"
 
 
+def extract_pou_elements(root: ET.Element, output_dir = None):
+    """
+    Extract all <pou> elements from an XML file and save them to separate files.
+    
+    Args:
+        input_file (str): Path to the input XML file
+        output_dir (str): Directory to store the extracted POU files
+    """
+    def categorize(root: ET.Element) -> LanCategory:
+        body = root.find("body")
+        if body is None:
+            logger.error("Body element not found in XML tree.")
+            return None
+        lan_LD = body.find("LD")
+        if lan_LD is not None:
+            return LanCategory.LD
+        lan_ST = body.find("ST")
+        if lan_ST is not None:
+            return LanCategory.ST
+        return None
 
+
+    # Find all pou elements using XPath expression
+    for pou in root.findall(".//pou"):
+        # Extract the name attribute
+        name = pou.get("name")
+        if name:
+            category = categorize(pou)
+            target_dir = output_dir
+            if target_dir is None:
+                if category == LanCategory.LD:
+                    target_dir = LD_OUTPUT_DIR
+                elif category == LanCategory.ST:
+                    target_dir = ST_OUTPUT_DIR
+                else:
+                    logger.error(f"Unknown language category for POU '{name}'. Skipping.")
+                    continue
+            # Create dir and output filename
+            os.makedirs(target_dir, exist_ok=True)
+            output_file = os.path.join(target_dir, f"T_{name}.xml")
+            pou_tree = ET.ElementTree(pou)
+            # Write to output file
+            pou_tree.write(output_file, encoding="utf-8", xml_declaration=False)
+            logger.debug(f"Extracted POU '{name}' to {output_file}")
 
 def deal_mixed_globalVars(root: ET.Element) -> None:
     logger.debug("Processing MixedAttrsVarList.")
@@ -207,4 +261,7 @@ def main():
     with open(var_output, 'w', encoding='utf-8') as f:
         f.write("")
     # extract global vars
-    extract_global_vars(root)           
+    extract_global_vars(root)
+    # extract pou elements
+    extract_pou_elements(root)
+    # TBD: extract configuration elements           

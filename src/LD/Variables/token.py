@@ -1,6 +1,8 @@
 import re
 
 # --- Recognition Functions ---
+from Logs.colorLogger import get_color_logger
+logger = get_color_logger("TOKEN")
 
 def recognize_integer_literal(text):
     """
@@ -87,7 +89,7 @@ def recognize_boolean_literal(text):
 
 # --- Main Tokenization Function ---
 
-def tokenize_literals(text):
+def tokenize_literals(text: str) -> bool:
     """
     Tokenize the input text to recognize and print various literals in sequence.
     
@@ -103,21 +105,15 @@ def tokenize_literals(text):
         recognize_boolean_literal    # Keywords TRUE/FALSE
     ]
     
-    position = 0
-    while position < len(text):
-        matched = False
-        # Try each recognizer on the substring starting at the current position
+    # only one word, judege if it's a literal
+    for word in text.split():
         for recognizer in recognizers:
-            result = recognizer(text[position:])
+            result = recognizer(word)
             if result:
-                literal_type, literal_value = result
-                print(f"Found {literal_type} literal: {literal_value}")
-                position += len(literal_value)
-                matched = True
-                break
-        if not matched:
-            # Skip over any non-matching character (e.g., spaces, delimiters)
-            position += 1
+                logger.debug(f"{result[0]} literal: {result[1]}")
+                return True
+    logger.debug("No literal found.")
+    return False
 
 # --- Test the Code ---
 

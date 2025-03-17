@@ -46,17 +46,16 @@ class InitialValue:
         return element
     
 class Variable:
-    def __init__(self, name=None, address=None, formalParameter=None, varType=None):
+    def __init__(self, name=None, address=None, formalParameter=None):
         self.name = name
         self.address = address
         self.formalParameter = formalParameter
-        self.varType = varType
         self.type = None
         self.initialValue = None
         self.connectionPointIn = None
         self.connectionPointOut = None
     def __repr__(self):
-        return f"Variable(name={self.name}, formalParameter={self.formalParameter}, varType={self.varType}, type={self.type})"
+        return f"Variable(name={self.name}, formalParameter={self.formalParameter}, type={self.type}, address={self.address}"
     def to_xml(self):
         if self.name is not None:
             var_element = ET.Element('variable')
@@ -72,19 +71,78 @@ class Variable:
             if self.connectionPointOut is not None:
                 var_element.append(self.connectionPointOut.to_xml('connectionPointOut'))
         return var_element
+    
+    @classmethod
+    def parse(cls, element: ET.Element):
+        """type 1:
+            <variable formalParameter="EN">
+                <connectionPointIn>
+                    <connection refLocalId="32" />
+                </connectionPointIn>
+            </variable>
+        """
+        """type 2:
+            <variable name="FB00">
+                <type>
+                    <derived name="FB0" />
+                </type>
+            </variable>
+        Parse an XML element into a Variable object.
+        Args:
+            element (ET.Element): The XML element representing a variable.  
+        Returns:
+            Variable: A new Variable instance populated with the parsed data.
+        Raises:
+            ValueError: If the element has neither 'name' nor 'formalParameter' attributes.
+        """
+        name = element.get('name')
+        formalParameter = element.get('formalParameter')
+        
+        if name is not None:
+            # Variable with a name (e.g., from Interface)
+            var = cls(name=name)
+            # Parse type if present
+            type_el = element.find('type')
+            if type_el is not None:
+                var.type = Type(element=type_el)
+            # Parse initialValue if present
+            initialValue = element.find('initialValue')
+            if initialValue is not None:
+                var.initialValue = InitialValue(element=initialValue)
+        elif formalParameter is not None:
+            # Variable with a formalParameter (e.g., from Block)
+            var = cls(formalParameter=formalParameter)
+            # Parse connectionPointIn if present
+            cpi_el = element.find('connectionPointIn')
+            if cpi_el is not None:
+                var.connectionPointIn = parse_connectionPointIn(cpi_el)
+            # Parse connectionPointOut if present
+            cpo_el = element.find('connectionPointOut')
+            if cpo_el is not None:
+                var.connectionPointOut = parse_connectionPointOut(cpo_el)
+        else:
+            raise ValueError("Variable element must have either 'name' or 'formalParameter' attribute")
+        
+        return var
 
 class Type:
     def __init__(self, element=None, typeName=None):
+
         if element is not None:
-            if element.tag.lower() == "derived":
+            if element.tag != "type":
+                logger.error(f"Not <type> Element!")
+                return
+            dev = element.find('derived')
+            if dev is not None:
                 self.typeName = "derived"
-                self.derivedName = element.attrib.get("name")
+                self.derivedName = dev.get('name')
             else:
-                self.typeName = element.tag
+                self.typeName = list(element)[0].tag
                 self.derivedName = None
         else:
             self.typeName = typeName
             self.derivedName = None
+            
 
     def __repr__(self):
         if self.typeName == "derived":
@@ -197,13 +255,7 @@ class Interface:
             if section_el is not None:
                 var_list = []
                 for var_el in section_el.findall('variable'):
-                    var_name = var_el.get('name')
-                    var = Variable(name=var_name)
-                    type_el = var_el.find('type')
-                    if type_el is not None:
-                        type_child = list(type_el)
-                        if type_child:
-                            var.type = Type(element=type_child[0])
+                    var = Variable.parse(var_el)
                     var_list.append(var)
                 setattr(interface, var_section, var_list)
         return interface
@@ -598,29 +650,17 @@ class Block:
         inputVars_el = element.find('inputVariables')
         if inputVars_el is not None:
             for var_el in inputVars_el.findall('variable'):
-                var = Variable(formalParameter=var_el.get('formalParameter'))
-                cp_in_el = var_el.find('connectionPointIn')
-                if cp_in_el is not None:
-                    var.connectionPointIn = parse_connectionPointIn(cp_in_el)
+                var = Variable.parse(var_el)
                 block.inputVariables.append(var)
         outputVars_el = element.find('outputVariables')
         if outputVars_el is not None:
             for var_el in outputVars_el.findall('variable'):
-                var = Variable(formalParameter=var_el.get('formalParameter'))
-                cp_out_el = var_el.find('connectionPointOut')
-                if cp_out_el is not None:
-                    var.connectionPointOut = parse_connectionPointOut(cp_out_el)
+                var = Variable.parse(var_el)
                 block.outputVariables.append(var)
         inoutVars_el = element.find('inOutVariables')
         if inoutVars_el is not None:
             for var_el in inoutVars_el.findall('variable'):
-                var = Variable(formalParameter=var_el.get('formalParameter'))
-                cp_in_el = var_el.find('connectionPointIn')
-                if cp_in_el is not None:
-                    var.connectionPointIn = parse_connectionPointIn(cp_in_el)
-                cp_out_el = var_el.find('connectionPointOut')
-                if cp_out_el is not None:
-                    var.connectionPointOut = parse_connectionPointOut(cp_out_el)
+                var = Variable.parse(var_el)
                 block.inOutVariables.append(var)
         try:
             id_val = int(kwargs['localId'])

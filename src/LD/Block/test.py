@@ -1,10 +1,12 @@
 import sys
 sys.path.append('..')
 sys.path.append('../..')
+import argparse
 import xml.etree.ElementTree as ET
 
 from LD.Schema.Elements import Variable, Type, Connection, ConnectionPointIn, ConnectionPointOut, RelPosition, Expression, OutVariable, InVariable, Block, LD, POU, Interface, Coil, Contact
 from LD.Utils.counter import get_value, set_value
+from LD.Variables.token import tokenize_literals
 import os
 from enum import Enum
 
@@ -27,7 +29,8 @@ class Body:
 # -----------------------------
 
 # Read the XML
-input_path = 'LD/Inters/preprocess.xml'
+DEFAULT_INPUT = 'LD/Inters/preprocess.xml'
+DEFAULT_OUTPUT = 'LD/Inters/intermediate.xml'
 gvars_path = '../data/Inters/vars.xml'
 
 # find declared expressions in the interface
@@ -56,7 +59,8 @@ def get_all_vars(LD: LD) -> set:
             exps = elem.get_expressions()
             for exp in exps:
                 if exp is not None:
-                    all_vars.add(exp)
+                    if tokenize_literals(exp) == False:
+                        all_vars.add(exp)
     return all_vars
 
 
@@ -129,8 +133,8 @@ def LD_convert(LD_element: LD) -> LD:
         new_LD.elements.append(elem)
     return new_LD
 
-def main():
-    with open(input_path, 'r', encoding='utf-8') as f:
+def process_xml(input_file, output_file):
+    with open(input_file, 'r', encoding='utf-8') as f:
         xml_string = f.read()
 
     root = ET.fromstring(xml_string.strip())
@@ -161,7 +165,7 @@ def main():
     logger.debug(f"Declared vars: {exist_vars}")
     logger.debug(f"All vars: {all_vars}")
     # find missing vars, add them from gvars
-    missing_vars = all_vars - exist_vars
+    missing_vars = [var for var in all_vars if var not in exist_vars]
     logger.debug(f"Missing vars: {missing_vars}")
     if missing_vars:
         with open(gvars_path, 'r', encoding='utf-8') as f:
@@ -182,8 +186,32 @@ def main():
     # Write out the resulting XML
     pou_element = pou.to_xml()
     xml_str = ET.tostring(pou_element, encoding='utf-8')
-    fd = os.open('LD/Inters/intermediate.xml', os.O_WRONLY | os.O_CREAT | os.O_TRUNC)
+    fd = os.open(output_file, os.O_WRONLY | os.O_CREAT | os.O_TRUNC)
     os.write(fd, xml_str)
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Process XML file by removing unsupported elements and converting formal parameters."
+    )
+    parser.add_argument(
+        '-i', '--input',
+        default=DEFAULT_INPUT,
+        help='Input XML file path (default: %(default)s)'
+    )
+    parser.add_argument(
+        '-o','--output',
+        default=DEFAULT_OUTPUT,
+        help='Output XML file path (default: %(default)s)'
+    )
+    
+    args = parser.parse_args()
+    if args.input != DEFAULT_INPUT and args.output == DEFAULT_OUTPUT:
+        args.output = args.input.replace("_preprocess", "_intermediate")
+        logger.debug(f"Output file path: {args.output}")
+    process_xml(args.input, args.output)
+
+if __name__ == "__main__":
+    main()
 
 ''' example gvars
 <resource>

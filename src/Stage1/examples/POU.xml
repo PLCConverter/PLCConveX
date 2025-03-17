@@ -1,0 +1,24 @@
+<project>
+  <addData>
+    <data name="http://www.3s-software.com/plcopenxml/application" handleUnknown="implementation">
+      <resource name="Application">
+        <addData>
+          <data name="http://www.3s-software.com/plcopenxml/pou" handleUnknown="implementation">
+            <pou name="PLC_PRG" pouType="program">
+              <body>
+                <LD>
+                </LD>
+              </body>
+              <addData />
+            </pou>
+          </data>
+          <data>
+            <pou>
+            ...
+            </pou>
+          </data>
+        </addData>
+      </resource>
+    </data>
+  </addData>
+</project>
