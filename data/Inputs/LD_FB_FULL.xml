@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://www.plcopen.org/xml/tc6_0200">
-  <fileHeader companyName="Inovance company" productName="InoProShop(V1.8.1.3)" productVersion="InoProShop(V1.8.1.3)" creationDateTime="2025-03-14T15:06:19.4890163" />
+  <fileHeader companyName="Inovance company" productName="InoProShop(V1.8.1.3)" productVersion="InoProShop(V1.8.1.3)" creationDateTime="2025-03-18T14:15:29.4688442" />
   <contentHeader name="LD_FB.project" modificationDateTime="2025-03-13T22:41:36.6403457">
     <coordinateInfo>
       <fbd>
@@ -151,7 +151,7 @@
                           <expression>tot</expression>
                         </connectionPointOut>
                       </variable>
-                      <variable formalParameter="en">
+                      <variable formalParameter="en1">
                         <connectionPointOut />
                       </variable>
                     </outputVariables>
@@ -171,7 +171,7 @@
                     <inputVariables>
                       <variable formalParameter="EN">
                         <connectionPointIn>
-                          <connection refLocalId="5" formalParameter="en" />
+                          <connection refLocalId="5" formalParameter="en1" />
                         </connectionPointIn>
                       </variable>
                       <variable formalParameter="In2">
@@ -428,7 +428,7 @@
                       <INT />
                     </type>
                   </variable>
-                  <variable name="en">
+                  <variable name="en1">
                     <type>
                       <BOOL />
                     </type>
@@ -561,7 +561,7 @@
                       <connection refLocalId="4" formalParameter="ENO" />
                     </connectionPointIn>
                     <connectionPointOut />
-                    <variable>en</variable>
+                    <variable>en1</variable>
                   </coil>
                   <rightPowerRail localId="2147483646">
                     <position x="0" y="0" />
