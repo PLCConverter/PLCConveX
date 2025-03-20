@@ -2,3 +2,6 @@ __pycache__
 .venv
 .vscode
 *.egg-info
+build
+project_files
+beremiz.xml

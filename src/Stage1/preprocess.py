@@ -25,7 +25,7 @@ ST_OUTPUT_DIR = "ST/Inputs"
 
 gv_root = ET.Element("resource")
 # Load the XML file
-input_file = "../data/Inputs/LD_FB_FULL.xml"
+input_file = "../data/Inputs/ST_BASIC_FULL.xml"
 var_output = "../data/Inters/vars.xml"
 
 

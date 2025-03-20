@@ -1,25 +1,11 @@
 <pou name="FB0" pouType="functionBlock">
               <interface>
-                <inputVars>
-                  <variable name="in1">
-                    <type>
-                      <BOOL />
-                    </type>
-                  </variable>
-                </inputVars>
-                <outputVars>
+                <localVars>
                   <variable name="out1">
                     <type>
                       <INT />
                     </type>
                   </variable>
-                  <variable name="en">
-                    <type>
-                      <BOOL />
-                    </type>
-                  </variable>
-                </outputVars>
-                <localVars>
                   <variable name="TON0">
                     <type>
                       <derived name="TON" />
@@ -50,68 +36,32 @@
                       </data>
                     </addData>
                   </vendorElement>
-                  <inVariable localId="6">
-                    <position x="0" y="0" />
-                    <connectionPointOut />
-                    <expression>T#4S</expression>
-                  </inVariable>
-                  <block localId="5" typeName="TON" instanceName="TON0">
-                    <position x="0" y="0" />
-                    <inputVariables>
-                      <variable formalParameter="IN">
-                        <connectionPointIn>
-                          <connection refLocalId="0" />
-                        </connectionPointIn>
-                      </variable>
-                      <variable formalParameter="PT">
-                        <connectionPointIn>
-                          <connection refLocalId="6" />
-                        </connectionPointIn>
-                      </variable>
-                    </inputVariables>
-                    <inOutVariables />
-                    <outputVariables>
-                      <variable formalParameter="Q">
-                        <connectionPointOut />
-                      </variable>
-                      <variable formalParameter="ET">
-                        <connectionPointOut>
-                          <expression />
-                        </connectionPointOut>
-                      </variable>
-                    </outputVariables>
-                    <addData>
-                      <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
-                        <CallType>functionblock</CallType>
-                      </data>
-                    </addData>
-                  </block>
-                  <inVariable localId="7">
+                  <inVariable localId="4">
                     <position x="0" y="0" />
                     <connectionPointOut />
                     <expression>INT#4</expression>
                   </inVariable>
-                  <inVariable localId="8">
+                  <inVariable localId="5">
                     <position x="0" y="0" />
                     <connectionPointOut />
-                    <expression>INT#5</expression>
+                    <expression>out1</expression>
                   </inVariable>
-                  <block localId="4" typeName="ADD">
+                  <block localId="3" typeName="ADD">
                     <position x="0" y="0" />
                     <inputVariables>
                       <variable formalParameter="EN">
                         <connectionPointIn>
-                          <connection refLocalId="5" formalParameter="Q" />
+                          <connection refLocalId="0" />
                         </connectionPointIn>
                       </variable>
                       <variable formalParameter="In2">
                         <connectionPointIn>
-                          <connection refLocalId="7" />
+                          <connection refLocalId="4" />
                         </connectionPointIn>
                       </variable>
                       <variable formalParameter="In3">
                         <connectionPointIn>
-                          <connection refLocalId="8" />
+                          <connection refLocalId="5" />
                         </connectionPointIn>
                       </variable>
                     </inputVariables>
@@ -132,21 +82,13 @@
                       </data>
                     </addData>
                   </block>
-                  <coil localId="9" negated="false" storage="set">
+                  <coil localId="6" negated="false" storage="set">
                     <position x="0" y="0" />
                     <connectionPointIn>
-                      <connection refLocalId="4" formalParameter="ENO" />
+                      <connection refLocalId="3" formalParameter="ENO" />
                     </connectionPointIn>
                     <connectionPointOut />
                     <variable>con1</variable>
-                  </coil>
-                  <coil localId="10" negated="false" storage="set">
-                    <position x="0" y="0" />
-                    <connectionPointIn>
-                      <connection refLocalId="4" formalParameter="ENO" />
-                    </connectionPointIn>
-                    <connectionPointOut />
-                    <variable>en</variable>
                   </coil>
                   <rightPowerRail localId="2147483646">
                     <position x="0" y="0" />

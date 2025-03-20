@@ -13,8 +13,9 @@ from data.Lex.keywords import ST_KEYWORDS
 from Logs.colorLogger import get_color_logger
 logger = get_color_logger("ST_Syntax")
 
+gvars_path = '../data/Inters/vars.xml'
 DEFAULT_INPUT = 'ST/Inputs/T_PLC_PRG.xml'
-DEFAULT_OUTPUT = 'ST/Outputs/test.xml'
+DEFAULT_OUTPUT = 'ST/Outputs/T_test.xml'
 IDENTIFIER_PATTERN = re.compile(
     r"(?:[a-zA-Z]|_(?:[a-zA-Z]|[0-9]))(?:_?(?:[a-zA-Z]|[0-9]))*"
 )
@@ -40,7 +41,7 @@ class ST:
         st_element = ET.Element('ST')
         if self.xhtml is not None:
             xhtml_element = ET.Element('xhtml')
-            xhtml_element.text = self.xhtml
+            xhtml_element.text = "__LT_PLACEHOLDER__" + self.xhtml + "__GT_PLACEHOLDER__"
             st_element.append(xhtml_element)
         return st_element
     @classmethod
@@ -197,6 +198,33 @@ def create_func_instance(interface: Interface, func_list = None) -> None:
         # add to interface
         interface.localVars.append(var)
 
+def modify_ST_func_call(st: ST, func_list = None) -> None:
+    """
+    Modify the function calls in the ST code to use the new function instances.
+    """
+    for func in func_list:
+        st.xhtml = re.sub(r'\b' + func + r'\b', func + '_FC', st.xhtml)
+
+def add_missing_vars(exist_vars, all_vars, interface: Interface):
+    missing_vars = [var for var in all_vars if var not in exist_vars]
+    logger.debug(f"Missing vars: {missing_vars}")
+
+    if missing_vars:
+        with open(gvars_path, 'r', encoding='utf-8') as f:
+            gvars_string = f.read()
+        gvars_root = ET.fromstring(gvars_string.strip())
+        for gvs in gvars_root:
+            if gvs.tag != 'globalVars':
+                continue
+            for var in gvs:
+                if name := var.get('name'):
+                    if name in missing_vars:
+                        logger.debug(f"Adding missing var '{name}' to interface.")
+                        interface.externalVars.append(Variable.parse(var))
+                else:
+                    logger.warning(f"Found variable without name: {var}")
+
+
 
 # Example usage
 def process_xml(input_file, output_file):
@@ -236,9 +264,22 @@ def process_xml(input_file, output_file):
             logger.debug(f"Creating function instance for {func_name}")
             pou_to_change_type.append(func_name)
     create_func_instance(pou.interface, pou_to_change_type)
+    modify_ST_func_call(pou.body.ST, pou_to_change_type)
     # write pou_to_change_type to an output file
     with open("ST/Outputs/change.txt", 'w', encoding='utf-8') as f:
         f.write("\n".join(pou_to_change_type))
+    
+    # add missing vars
+    all_vars = variable_identifiers
+    all_vars = sorted(all_vars)
+    logger.debug(f"All vars: {all_vars}")
+    add_missing_vars(exist_vars, all_vars, pou.interface)
+    
+    # regenerate the XML
+    pou_element = pou.to_xml()
+    xml_str = ET.tostring(pou_element, encoding='utf-8')
+    fd = os.open(output_file, os.O_WRONLY | os.O_CREAT | os.O_TRUNC)
+    os.write(fd, xml_str)
         
     
 

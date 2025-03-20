@@ -1,0 +1,1000 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0200">
+  <fileHeader companyName="Inovance company" productName="InoProShop(V1.8.1.3)" productVersion="InoProShop(V1.8.1.3)" creationDateTime="2025-03-07T16:08:32.1498014" />
+  <contentHeader name="RACK2537.project" modificationDateTime="2025-03-07T16:07:54.7010798">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="1" y="1" />
+      </fbd>
+      <ld>
+        <scaling x="1" y="1" />
+      </ld>
+      <sfc>
+        <scaling x="1" y="1" />
+      </sfc>
+    </coordinateInfo>
+    <addData>
+      <data name="http://www.3s-software.com/plcopenxml/projectinformation" handleUnknown="implementation">
+        <ProjectInformation />
+      </data>
+    </addData>
+  </contentHeader>
+  <types>
+    <dataTypes />
+    <pous>
+      <pou name="PLC_PRG" pouType="program">
+        <interface>
+          <localVars>
+            <variable name="X_EN">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="X_FWK">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="X_FWKS">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="X_TYYXH">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="X_LYYS">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="X_LYYXH">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="X_LDXH">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="X_LRYYXH">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="Y_ENO">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="FWZ">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="X_FWWC">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="Y_TCYY">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="Y_LCYY">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="Y_LJCYY">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="Y_LJCDW">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="Y_LRCYY">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="XY_LGJ">
+              <type>
+                <BOOL />
+              </type>
+            </variable>
+            <variable name="FWBZ">
+              <type>
+                <INT />
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <LD>
+            <leftPowerRail localId="0">
+              <position x="0" y="0" />
+              <connectionPointOut formalParameter="none" />
+            </leftPowerRail>
+            <comment localId="1" height="0" width="0">
+              <position x="0" y="0" />
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">网络注释</xhtml>
+              </content>
+            </comment>
+            <vendorElement localId="2">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdelementtype" handleUnknown="implementation">
+                  <ElementType xmlns="">networktitle</ElementType>
+                </data>
+              </addData>
+            </vendorElement>
+            <contact localId="4" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_EN</variable>
+            </contact>
+            <contact localId="5" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_EN</variable>
+            </contact>
+            <vendorElement localId="3">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">ParallelBranch</xhtml>
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/ldparallelbranch" handleUnknown="implementation">
+                  <ParallelBranch mode="seq" xmlns="">
+                    <BranchInput>
+                      <connectionPointIn>
+                        <connection refLocalId="0" />
+                      </connectionPointIn>
+                    </BranchInput>
+                    <BranchTrees>
+                      <Tree>
+                        <connectionPointIn>
+                          <connection refLocalId="4" />
+                        </connectionPointIn>
+                      </Tree>
+                      <Tree>
+                        <connectionPointIn>
+                          <connection refLocalId="5" />
+                        </connectionPointIn>
+                      </Tree>
+                    </BranchTrees>
+                  </ParallelBranch>
+                </data>
+              </addData>
+            </vendorElement>
+            <coil localId="6" negated="false" storage="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="4" />
+                <connection refLocalId="5" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>Y_ENO</variable>
+            </coil>
+            <comment localId="7" height="0" width="0">
+              <position x="0" y="0" />
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">网络注释</xhtml>
+              </content>
+            </comment>
+            <vendorElement localId="8">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdelementtype" handleUnknown="implementation">
+                  <ElementType xmlns="">networktitle</ElementType>
+                </data>
+              </addData>
+            </vendorElement>
+            <contact localId="11" negated="true" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_FWK</variable>
+            </contact>
+            <contact localId="12" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_FWK</variable>
+            </contact>
+            <contact localId="13" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="12" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_FWKS</variable>
+            </contact>
+            <vendorElement localId="10">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">ParallelBranch</xhtml>
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/ldparallelbranch" handleUnknown="implementation">
+                  <ParallelBranch mode="seq" xmlns="">
+                    <BranchInput>
+                      <connectionPointIn>
+                        <connection refLocalId="0" />
+                      </connectionPointIn>
+                    </BranchInput>
+                    <BranchTrees>
+                      <Tree>
+                        <connectionPointIn>
+                          <connection refLocalId="11" />
+                        </connectionPointIn>
+                      </Tree>
+                      <Tree>
+                        <connectionPointIn>
+                          <connection refLocalId="13" />
+                        </connectionPointIn>
+                      </Tree>
+                    </BranchTrees>
+                  </ParallelBranch>
+                </data>
+              </addData>
+            </vendorElement>
+            <contact localId="14" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="11" />
+                <connection refLocalId="13" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_EN</variable>
+            </contact>
+            <coil localId="15" negated="false" storage="reset">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="14" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_FWWC</variable>
+            </coil>
+            <inVariable localId="17">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>0</expression>
+            </inVariable>
+            <block localId="16" typeName="MOVE">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="14" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In2">
+                  <connectionPointIn>
+                    <connection refLocalId="17" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="ENO">
+                  <connectionPointOut />
+                </variable>
+                <variable formalParameter="Out2">
+                  <connectionPointOut>
+                    <expression>FWBZ</expression>
+                  </connectionPointOut>
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+              </addData>
+            </block>
+            <comment localId="18" height="0" width="0">
+              <position x="0" y="0" />
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">网络注释</xhtml>
+              </content>
+            </comment>
+            <vendorElement localId="19">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdelementtype" handleUnknown="implementation">
+                  <ElementType xmlns="">networktitle</ElementType>
+                </data>
+              </addData>
+            </vendorElement>
+            <contact localId="22" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_FWKS</variable>
+            </contact>
+            <inVariable localId="23">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>0</expression>
+            </inVariable>
+            <inVariable localId="24">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>FWBZ</expression>
+            </inVariable>
+            <block localId="21" typeName="EQ">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="22" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In2">
+                  <connectionPointIn>
+                    <connection refLocalId="23" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In3">
+                  <connectionPointIn>
+                    <connection refLocalId="24" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="Out1">
+                  <connectionPointOut />
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+              </addData>
+            </block>
+            <contact localId="25" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>FWZ</variable>
+            </contact>
+            <vendorElement localId="20">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">ParallelBranch</xhtml>
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/ldparallelbranch" handleUnknown="implementation">
+                  <ParallelBranch mode="seq" xmlns="">
+                    <BranchInput>
+                      <connectionPointIn>
+                        <connection refLocalId="0" />
+                      </connectionPointIn>
+                    </BranchInput>
+                    <BranchTrees>
+                      <Tree>
+                        <connectionPointIn>
+                          <connection refLocalId="21" formalParameter="Out1" />
+                        </connectionPointIn>
+                      </Tree>
+                      <Tree>
+                        <connectionPointIn>
+                          <connection refLocalId="25" />
+                        </connectionPointIn>
+                      </Tree>
+                    </BranchTrees>
+                  </ParallelBranch>
+                </data>
+              </addData>
+            </vendorElement>
+            <contact localId="26" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="21" />
+                <connection refLocalId="25" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_FWK</variable>
+            </contact>
+            <contact localId="27" negated="true" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="26" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_FWWC</variable>
+            </contact>
+            <coil localId="28" negated="false" storage="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="27" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>FWZ</variable>
+            </coil>
+            <comment localId="29" height="0" width="0">
+              <position x="0" y="0" />
+              <content>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">网络注释</xhtml>
+              </content>
+            </comment>
+            <vendorElement localId="30">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml" />
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdelementtype" handleUnknown="implementation">
+                  <ElementType xmlns="">networktitle</ElementType>
+                </data>
+              </addData>
+            </vendorElement>
+            <contact localId="32" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="0" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>FWZ</variable>
+            </contact>
+            <inVariable localId="35">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>0</expression>
+            </inVariable>
+            <inVariable localId="36">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>FWBZ</expression>
+            </inVariable>
+            <block localId="34" typeName="EQ">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="32" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In2">
+                  <connectionPointIn>
+                    <connection refLocalId="35" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In3">
+                  <connectionPointIn>
+                    <connection refLocalId="36" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="Out1">
+                  <connectionPointOut />
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+              </addData>
+            </block>
+            <coil localId="37" negated="false" storage="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="34" formalParameter="Out1" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>Y_LCYY</variable>
+            </coil>
+            <contact localId="39" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="34" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_LYYS</variable>
+            </contact>
+            <inVariable localId="40">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>10</expression>
+            </inVariable>
+            <block localId="38" typeName="MOVE">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="39" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In2">
+                  <connectionPointIn>
+                    <connection refLocalId="40" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="ENO">
+                  <connectionPointOut />
+                </variable>
+                <variable formalParameter="Out2">
+                  <connectionPointOut>
+                    <expression>FWBZ</expression>
+                  </connectionPointOut>
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+              </addData>
+            </block>
+            <inVariable localId="43">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>10</expression>
+            </inVariable>
+            <inVariable localId="44">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>FWBZ</expression>
+            </inVariable>
+            <block localId="42" typeName="EQ">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="32" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In2">
+                  <connectionPointIn>
+                    <connection refLocalId="43" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In3">
+                  <connectionPointIn>
+                    <connection refLocalId="44" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="Out1">
+                  <connectionPointOut />
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+              </addData>
+            </block>
+            <contact localId="46" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="42" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>FWZ</variable>
+            </contact>
+            <contact localId="49" negated="true" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="46" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>XY_LGJ</variable>
+            </contact>
+            <contact localId="50" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="46" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_LYYXH</variable>
+            </contact>
+            <vendorElement localId="48">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">ParallelBranch</xhtml>
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/ldparallelbranch" handleUnknown="implementation">
+                  <ParallelBranch mode="seq" xmlns="">
+                    <BranchInput>
+                      <connectionPointIn>
+                        <connection refLocalId="46" />
+                      </connectionPointIn>
+                    </BranchInput>
+                    <BranchTrees>
+                      <Tree>
+                        <connectionPointIn>
+                          <connection refLocalId="49" />
+                        </connectionPointIn>
+                      </Tree>
+                      <Tree>
+                        <connectionPointIn>
+                          <connection refLocalId="50" />
+                        </connectionPointIn>
+                      </Tree>
+                    </BranchTrees>
+                  </ParallelBranch>
+                </data>
+              </addData>
+            </vendorElement>
+            <coil localId="51" negated="false" storage="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="49" />
+                <connection refLocalId="50" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>Y_LJCYY</variable>
+            </coil>
+            <coil localId="52" negated="false" storage="reset">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="49" />
+                <connection refLocalId="50" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>XY_LGJ</variable>
+            </coil>
+            <contact localId="53" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="46" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>XY_LGJ</variable>
+            </contact>
+            <coil localId="54" negated="false" storage="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="53" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>Y_LJCDW</variable>
+            </coil>
+            <contact localId="57" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="42" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>XY_LGJ</variable>
+            </contact>
+            <contact localId="58" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="57" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_LDXH</variable>
+            </contact>
+            <contact localId="59" negated="true" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="42" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>XY_LGJ</variable>
+            </contact>
+            <contact localId="60" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="59" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_LYYXH</variable>
+            </contact>
+            <vendorElement localId="56">
+              <position x="0" y="0" />
+              <alternativeText>
+                <xhtml xmlns="http://www.w3.org/1999/xhtml">ParallelBranch</xhtml>
+              </alternativeText>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/ldparallelbranch" handleUnknown="implementation">
+                  <ParallelBranch mode="seq" xmlns="">
+                    <BranchInput>
+                      <connectionPointIn>
+                        <connection refLocalId="42" formalParameter="Out1" />
+                      </connectionPointIn>
+                    </BranchInput>
+                    <BranchTrees>
+                      <Tree>
+                        <connectionPointIn>
+                          <connection refLocalId="58" />
+                        </connectionPointIn>
+                      </Tree>
+                      <Tree>
+                        <connectionPointIn>
+                          <connection refLocalId="60" />
+                        </connectionPointIn>
+                      </Tree>
+                    </BranchTrees>
+                  </ParallelBranch>
+                </data>
+              </addData>
+            </vendorElement>
+            <inVariable localId="61">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>20</expression>
+            </inVariable>
+            <block localId="55" typeName="MOVE">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="58" />
+                    <connection refLocalId="60" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In2">
+                  <connectionPointIn>
+                    <connection refLocalId="61" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="ENO">
+                  <connectionPointOut />
+                </variable>
+                <variable formalParameter="Out2">
+                  <connectionPointOut>
+                    <expression>FWBZ</expression>
+                  </connectionPointOut>
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+              </addData>
+            </block>
+            <inVariable localId="64">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>20</expression>
+            </inVariable>
+            <inVariable localId="65">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>FWBZ</expression>
+            </inVariable>
+            <block localId="63" typeName="EQ">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="32" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In2">
+                  <connectionPointIn>
+                    <connection refLocalId="64" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In3">
+                  <connectionPointIn>
+                    <connection refLocalId="65" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="Out1">
+                  <connectionPointOut />
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+              </addData>
+            </block>
+            <contact localId="66" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="63" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_LYYS</variable>
+            </contact>
+            <coil localId="67" negated="false" storage="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="66" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>Y_LRCYY</variable>
+            </coil>
+            <coil localId="68" negated="false" storage="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="66" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>Y_TCYY</variable>
+            </coil>
+            <contact localId="70" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="66" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_LRYYXH</variable>
+            </contact>
+            <contact localId="71" negated="false" storage="none" edge="none">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="70" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_TYYXH</variable>
+            </contact>
+            <inVariable localId="72">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>30</expression>
+            </inVariable>
+            <block localId="69" typeName="MOVE">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="71" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In2">
+                  <connectionPointIn>
+                    <connection refLocalId="72" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="ENO">
+                  <connectionPointOut />
+                </variable>
+                <variable formalParameter="Out2">
+                  <connectionPointOut>
+                    <expression>FWBZ</expression>
+                  </connectionPointOut>
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+              </addData>
+            </block>
+            <inVariable localId="74">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>FWBZ</expression>
+            </inVariable>
+            <inVariable localId="75">
+              <position x="0" y="0" />
+              <connectionPointOut />
+              <expression>30</expression>
+            </inVariable>
+            <block localId="73" typeName="EQ">
+              <position x="0" y="0" />
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <connection refLocalId="32" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In2">
+                  <connectionPointIn>
+                    <connection refLocalId="74" />
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="In3">
+                  <connectionPointIn>
+                    <connection refLocalId="75" />
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables />
+              <outputVariables>
+                <variable formalParameter="Out1">
+                  <connectionPointOut />
+                </variable>
+              </outputVariables>
+              <addData>
+                <data name="http://www.3s-software.com/plcopenxml/fbdcalltype" handleUnknown="implementation">
+                  <CallType xmlns="">operator</CallType>
+                </data>
+              </addData>
+            </block>
+            <coil localId="76" negated="false" storage="set">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="73" formalParameter="Out1" />
+              </connectionPointIn>
+              <connectionPointOut />
+              <variable>X_FWWC</variable>
+            </coil>
+            <rightPowerRail localId="2147483646">
+              <position x="0" y="0" />
+              <connectionPointIn>
+                <connection refLocalId="16" formalParameter="">
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/ldbranchid" handleUnknown="implementation">
+                      <BranchId xmlns="">5</BranchId>
+                    </data>
+                  </addData>
+                </connection>
+                <connection refLocalId="38" formalParameter="">
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/ldbranchid" handleUnknown="implementation">
+                      <BranchId xmlns="">10</BranchId>
+                    </data>
+                  </addData>
+                </connection>
+                <connection refLocalId="55" formalParameter="">
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/ldbranchid" handleUnknown="implementation">
+                      <BranchId xmlns="">17</BranchId>
+                    </data>
+                  </addData>
+                </connection>
+                <connection refLocalId="69" formalParameter="">
+                  <addData>
+                    <data name="http://www.3s-software.com/plcopenxml/ldbranchid" handleUnknown="implementation">
+                      <BranchId xmlns="">21</BranchId>
+                    </data>
+                  </addData>
+                </connection>
+              </connectionPointIn>
+            </rightPowerRail>
+          </LD>
+        </body>
+        <addData />
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations />
+  </instances>
+</project>

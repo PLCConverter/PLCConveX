@@ -10,13 +10,10 @@
                     <type>
                       <BOOL />
                     </type>
-                    <initialValue>
-                      <simpleValue value="TRUE" />
-                    </initialValue>
                   </variable>
                 </globalVars><globalVars><variable name="norm1">
                     <type>
-                      <INT />
+                      <BOOL />
                     </type>
                   </variable>
                 </globalVars></resource>

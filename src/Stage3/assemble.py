@@ -13,7 +13,8 @@ logger = get_color_logger("ASSEMBLE")
 BASE_XML_PATH = "../data/Base/beremiz_base2.xml"
 OUTPUT_PATH = "../data/Outputs/plc.xml"
 VARS_PATH = "../data/Inters/vars.xml"
-POUS_PATH = ["LD/Outputs"]
+POU_CHANGE_PATH = "ST/Outputs/change.txt"
+POUS_PATH = ["LD/Outputs", "ST/Outputs"]
 # Parse the base XML
 base_root = ET.parse(BASE_XML_PATH).getroot()
 # Parse the vars XML
@@ -41,6 +42,10 @@ def deal_pous(root: ET.Element) -> None:
         logger.error(f"Root tag is {root.tag} NOT 'pous'. Failed to process pous.")
         return
     
+    # read the list of pou changes separated by new line
+    with open(POU_CHANGE_PATH, "r") as f:
+        pou_changes = f.read().splitlines()
+
     # Insert the pou files from POUS_PATH
     for cur_dir in POUS_PATH:
         files = glob.glob(f"{cur_dir}/T_*.xml")
@@ -49,7 +54,14 @@ def deal_pous(root: ET.Element) -> None:
             pou_root = ET.parse(file).getroot()
             if pou_root.tag != "pou":
                 logger.error(f"Root tag is {pou_root.tag} NOT 'pou'. Failed to process pou.")
-                return
+                continue
+            name = pou_root.get("name")
+            if name is None:
+                logger.error(f"Failed to get 'name' attribute of pou.")
+                continue
+            if name in pou_changes:
+                logger.debug(f"Changing {name}'s pouType")
+                pou_root.set("pouType", "functionBlock")
             root.append(pou_root)
 
 
@@ -80,3 +92,6 @@ def main():
 
   # Write the output XML
     ET.ElementTree(base_root).write(OUTPUT_PATH)
+
+if __name__ == "__main__":
+    main()
