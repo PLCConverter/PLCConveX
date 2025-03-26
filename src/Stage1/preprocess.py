@@ -25,9 +25,17 @@ ST_OUTPUT_DIR = "ST/Inputs"
 
 gv_root = ET.Element("resource")
 # Load the XML file
-input_file = "../data/Inputs/ST_BASIC_FULL.xml"
+input_file = "../data/Inputs/TYPE_BASIC.xml"
 var_output = "../data/Inters/vars.xml"
+type_output = "Type/Inputs/types.xml"
 
+def extract_datatype_elements(root: ET.Element, output_dir = type_output):
+    dts = ET.Element("dataTypes")
+    for dt in root.findall(".//dataType"):
+        dts.append(dt)
+    types = ET.Element("types")
+    types.append(dts)
+    ET.ElementTree(types).write(output_dir, encoding="utf-8", xml_declaration=False)
 
 def extract_pou_elements(root: ET.Element, output_dir = None):
     """
@@ -264,4 +272,6 @@ def main():
     extract_global_vars(root)
     # extract pou elements
     extract_pou_elements(root)
+    # extract data type elements
+    extract_datatype_elements(root)
     # TBD: extract configuration elements           

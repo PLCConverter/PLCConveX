@@ -112,3 +112,4 @@ class DataTypes:
         dts = cls()
         for dataType_element in element.findall('dataType'):
             dts.add_dataType(DataType.parse(dataType_element))
+        return dts

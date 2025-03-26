@@ -1,0 +1,56 @@
+<types><dataTypes><dataType name="_sDT">
+              <baseType>
+                <struct>
+                  <variable name="year">
+                    <type>
+                      <DINT />
+                    </type>
+                    <documentation>
+                      <xhtml>按360天计算</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="month">
+                    <type>
+                      <DINT />
+                    </type>
+                    <documentation>
+                      <xhtml>按12个月计算</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="day">
+                    <type>
+                      <DINT />
+                    </type>
+                    <documentation>
+                      <xhtml>按30天计算</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="hour">
+                    <type>
+                      <DINT />
+                    </type>
+                    <documentation>
+                      <xhtml>按24小时</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="min">
+                    <type>
+                      <DINT />
+                    </type>
+                    <documentation>
+                      <xhtml>按60分钟</xhtml>
+                    </documentation>
+                  </variable>
+                  <variable name="sec">
+                    <type>
+                      <DINT />
+                    </type>
+                    <documentation>
+                      <xhtml>按60秒</xhtml>
+                    </documentation>
+                  </variable>
+                </struct>
+              </baseType>
+              <addData />
+            </dataType>
+          </dataTypes></types>

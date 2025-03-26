@@ -1,0 +1,40 @@
+<types>
+  <dataTypes>
+    <dataType name="_sDT">
+      <baseType>
+        <struct>
+          <variable name="year">
+            <type>
+              <DINT />
+            </type>
+          </variable>
+          <variable name="month">
+            <type>
+              <DINT />
+            </type>
+          </variable>
+          <variable name="day">
+            <type>
+              <DINT />
+            </type>
+          </variable>
+          <variable name="hour">
+            <type>
+              <DINT />
+            </type>
+          </variable>
+          <variable name="min">
+            <type>
+              <DINT />
+            </type>
+          </variable>
+          <variable name="sec">
+            <type>
+              <DINT />
+            </type>
+          </variable>
+        </struct>
+      </baseType>
+    </dataType>
+  </dataTypes>
+</types>

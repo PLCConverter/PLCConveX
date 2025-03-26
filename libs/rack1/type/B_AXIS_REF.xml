@@ -1,0 +1,104 @@
+<dataType name="B_AXIS_REF">
+  <baseType>
+    <struct>
+      <variable name="ReadyForPower">
+        <type>
+          <BOOL />
+        </type>
+      </variable>
+      <variable name="Power">
+        <type>
+          <BOOL />
+        </type>
+      </variable>
+      <variable name="nAxisState">
+        <type>
+          <INT />
+        </type>
+        <initialValue>
+          <simpleValue value="0" />
+        </initialValue>
+      </variable>
+      <variable name="StatusWord">
+        <type>
+          <UINT />
+        </type>
+      </variable>
+      <variable name="ControlWord">
+        <type>
+          <UINT />
+        </type>
+      </variable>
+      <variable name="ProfileTargetPosition">
+        <type>
+          <DINT />
+        </type>
+      </variable>
+      <variable name="ProfileVelocity">
+        <type>
+          <UDINT />
+        </type>
+      </variable>
+      <variable name="ProfileTargetAcceleration">
+        <type>
+          <UDINT />
+        </type>
+      </variable>
+      <variable name="ProfileTargetDeceleration">
+        <type>
+          <UDINT />
+        </type>
+      </variable>
+      <variable name="ModesOfOperation">
+        <type>
+          <SINT />
+        </type>
+      </variable>
+      <variable name="MaxJerkAppl">
+        <type>
+          <UDINT />
+        </type>
+      </variable>
+      <variable name="ActualPosition">
+        <type>
+          <DINT />
+        </type>
+      </variable>
+      <variable name="Instruction">
+        <type>
+          <INT />
+        </type>
+      </variable>
+      <variable name="ActualVelocity">
+        <type>
+          <UDINT />
+        </type>
+      </variable>
+      <variable name="Homing">
+        <type>
+          <INT />
+        </type>
+      </variable>
+      <variable name="HomeMethod">
+        <type>
+          <SINT />
+        </type>
+      </variable>
+      <variable name="HomeAcceleration">
+        <type>
+          <UDINT />
+        </type>
+      </variable>
+      <variable name="HomeFastVelocity">
+        <type>
+          <UDINT />
+        </type>
+      </variable>
+      <variable name="HomeSlowVelocity">
+        <type>
+          <UDINT />
+        </type>
+      </variable>
+    </struct>
+  </baseType>
+</dataType>
