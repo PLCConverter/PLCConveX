@@ -22,12 +22,14 @@ class LanCategory(Enum):
 GLOBAL_SLASH_LIST = ["addData", "rightPowerRail", "vendorElement"]
 LD_OUTPUT_DIR = "LD/Inputs"
 ST_OUTPUT_DIR = "ST/Inputs" 
+DEFAULT_TASK_INPUT = "../data/Inputs/TASK.xml"
 
 gv_root = ET.Element("resource")
 # Load the XML file
-input_file = "../data/Inputs/TYPE_BASIC.xml"
+input_file = "../data/Inputs/LD_COMPLEX_1.xml"
 var_output = "../data/Inters/vars.xml"
 type_output = "Type/Inputs/types.xml"
+task_output = "Task/Inputs/tasks.xml"
 
 def extract_datatype_elements(root: ET.Element, output_dir = type_output):
     dts = ET.Element("dataTypes")
@@ -168,9 +170,6 @@ def deal_globalVars(root: ET.Element, retain = False, constant = False) -> None:
             pass
     # append globalVars to the gv_root
     gv_root.append(global_vars)
-
-    
-
                             
 def extract_global_vars(root: ET.Element) -> None:
     if root.tag != "project":
@@ -212,6 +211,16 @@ def strip_namespace(root: ET.Element) -> str:
     
     # Serialize the modified tree back to a string
     return ET.tostring(root, encoding='unicode')
+
+def deal_task(input_file = DEFAULT_TASK_INPUT):
+
+    root = ET.parse(input_file).getroot()
+    # strip the namespace
+    modified_xml = strip_namespace(root)
+    # write the modified XML to a file
+    logger.info(f"Writing modified XML to {task_output}.")
+    with open(task_output, 'w', encoding='utf-8') as f:
+        f.write(modified_xml) 
 
 # Convert formalParameter attributes
 FORMALPARAMETER_MAP = {
@@ -274,4 +283,6 @@ def main():
     extract_pou_elements(root)
     # extract data type elements
     extract_datatype_elements(root)
+    # deal with task elements FROM ANOTHER FILE
+    deal_task(DEFAULT_TASK_INPUT)
     # TBD: extract configuration elements           

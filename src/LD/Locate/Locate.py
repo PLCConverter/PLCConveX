@@ -3,11 +3,11 @@ sys.path.append("..")
 sys.path.append("../..")
 
 import xml.etree.ElementTree as ET
-import logging
+import collections
 from Logs.colorLogger import get_color_logger
 from dataclasses import dataclass, field
 from typing import Dict, Set, List
-from LD.Block.test import BlockCategory
+from LD.Block.test import BlockCategory, classify_block_element
 
 # External module functions (assumed to be available)
 from .dim import get_dimensions, compute_block_port_y, DIMENSIONS
@@ -135,39 +135,127 @@ class Locator:
 
     def assign_layers(self) -> None:
         """
-        Assign layer numbers based on parent-child relationships.
-        Special handling is provided for leftPowerRail, inVariable, and outVariable nodes.
+        Assign layer numbers using topological sort (Kahn's algorithm).
+        Layer represents the longest path from a source node (layer 0 or 1).
+        leftPowerRail nodes are fixed at layer 0.
+        Other nodes without parents start at layer 1.
         """
-        changed = True
-        while changed:
-            changed = False
-            for node in self.nodes.values():
-                if node.tag == "leftPowerRail":
-                    if node.layer != 0:
-                        node.layer = 0
-                        changed = True
-                elif not node.parents:
-                    if node.layer is None or node.layer != 1:
-                        node.layer = 1
-                        changed = True
-                else:
-                    if all(self.nodes[p].layer is not None for p in node.parents):
-                        new_layer = max(self.nodes[p].layer for p in node.parents) + 1
-                        if node.layer is None or new_layer > node.layer:
-                            node.layer = new_layer
-                            changed = True
-        # Adjust layer values: multiply by 2 and subtract 1 (minimum 0)
+        in_degree: Dict[str, int] = {nid: 0 for nid in self.nodes}
+        # Initialize layers to None before calculation
         for node in self.nodes.values():
-            if node.layer is not None:
-                node.layer = max(0, node.layer * 2 - 1)
-        # Further adjust layers for specific tags.
+            node.layer = None
+
+        queue = collections.deque()
+
+        # 1. Initialize layers for source nodes and calculate in-degrees
+        for node_id, node in self.nodes.items():
+            in_degree[node_id] = len(node.parents)
+            if node.tag == "leftPowerRail":
+                if node.layer is None: # Assign only if not already set
+                    node.layer = 0
+                    queue.append(node_id)
+            elif in_degree[node_id] == 0:
+                # Other nodes with no parents start at layer 1
+                if node.layer is None:
+                    node.layer = 1
+                    queue.append(node_id)
+
+        processed_count = 0
+        # 2. Process nodes layer by layer using Kahn's algorithm
+        while queue:
+            u_id = queue.popleft()
+            processed_count += 1
+            u_node = self.nodes[u_id]
+
+            # Ensure the dequeued node has a layer (should be guaranteed by initialization)
+            if u_node.layer is None:
+                 logger.error(f"CRITICAL: Node {u_id} dequeued but has no layer!")
+                 # Attempt recovery: Assign based on parents if possible, else default
+                 parent_layers = [self.nodes[p].layer for p in u_node.parents if p in self.nodes and self.nodes[p].layer is not None]
+                 u_node.layer = (max(parent_layers) + 1) if parent_layers else (1 if u_node.tag != "leftPowerRail" else 0)
+                 logger.warning(f"Recovered layer for {u_id} set to {u_node.layer}")
+
+            # Process children
+            for v_id in u_node.children:
+                v_node = self.nodes[v_id]
+                in_degree[v_id] -= 1
+                if in_degree[v_id] == 0:
+                    # All parents processed, calculate layer for v_node
+                    parent_layers = [self.nodes[p].layer for p in v_node.parents if p in self.nodes and self.nodes[p].layer is not None]
+                    if not parent_layers:
+                         # This means a node's parents weren't processed or don't exist in the map,
+                         # or it's connected to something outside the processed set.
+                         # If it truly has parents, this indicates an issue.
+                         # If it has no parents (in_degree was initially 0), it should have been handled already.
+                         # Assign layer based on the current node u_node as a fallback.
+                         logger.warning(f"Node {v_id} has 0 in-degree but no valid parent layers found. Assigning layer based on predecessor {u_id}.")
+                         v_node.layer = u_node.layer + 1
+                    else:
+                        # Assign layer as max of parents' layers + 1
+                        v_node.layer = max(parent_layers) + 1
+
+                    queue.append(v_id)
+                elif in_degree[v_id] < 0:
+                     logger.error(f"In-degree for node {v_id} became negative. Graph connection issue?")
+
+
+        # 3. Check for cycles or unprocessed nodes
+        if processed_count != len(self.nodes):
+            unprocessed_nodes = [nid for nid, node in self.nodes.items() if node.layer is None]
+            logger.warning(f"Topological sort completed with potential issues.")
+            logger.warning(f"Processed {processed_count}/{len(self.nodes)} nodes.")
+            if unprocessed_nodes:
+                 logger.warning(f"Unprocessed nodes (potential cycle members): {unprocessed_nodes}")
+                 # Assign a default high layer to unprocessed nodes to prevent errors later
+                 default_layer = max((node.layer for node in self.nodes.values() if node.layer is not None), default=-1) + 1
+                 for node_id in unprocessed_nodes:
+                     self.nodes[node_id].layer = default_layer
+                     logger.warning(f"Assigned default layer {default_layer} to unprocessed node {node_id}")
+
+        # 4. Post-processing: Scale layers (original logic: layer * 2 - 1)
+        # Ensure all nodes have a layer assigned before scaling
+        max_initial_layer = 0
         for node in self.nodes.values():
-            if node.tag == "outVariable":
-                if all(self.nodes[p].layer is not None for p in node.parents):
-                    node.layer = max(self.nodes[p].layer for p in node.parents) + 1
-            if node.tag == "inVariable":
-                if all(self.nodes[c].layer is not None for c in node.children):
-                    node.layer = min(self.nodes[c].layer for c in node.children) - 1
+            if node.layer is None:
+                # This should only happen if cycle detection failed to assign default
+                logger.error(f"Critical error: Node {node.local_id} has no layer after topological sort and cycle check. Assigning default layer 1.")
+                node.layer = 1 # Assign a fallback
+            max_initial_layer = max(max_initial_layer, node.layer)
+
+        logger.debug(f"Max initial layer assigned: {max_initial_layer}")
+
+        for node in self.nodes.values():
+            # Apply scaling: Multiply by 2 and subtract 1, ensuring minimum 0
+            # Layer 0 (PowerRail) -> stays 0
+            # Layer 1 (Sources) -> becomes 1 (2*1 - 1)
+            # Layer 2 -> becomes 3 (2*2 - 1)
+            node.layer = max(0, node.layer * 2 - 1 if node.layer > 0 else 0)
+
+        # 5. Post-processing: Adjust specific types (original logic, applied once after scaling)
+        # This adjustment logic can potentially conflict with topological sort, use cautiously.
+        nodes_to_adjust = [n for n in self.nodes.values() if n.tag in ("inVariable", "outVariable")]
+        if nodes_to_adjust:
+            for node in nodes_to_adjust:
+                 original_layer = node.layer
+                 if node.tag == "outVariable":
+                     # Rule: max(parent_layer) + 1. Topological sort should already achieve this using initial layers.
+                     # Re-applying *after scaling* might shift it further right.
+                     if node.parents:
+                         parent_layers = [self.nodes[p].layer for p in node.parents if p in self.nodes and self.nodes[p].layer is not None]
+                         if parent_layers:
+                             new_layer = max(parent_layers) + 1 # Using scaled parent layers
+                             if new_layer > node.layer:
+                                 node.layer = new_layer
+                 elif node.tag == "inVariable":
+                     # Rule: min(child_layer) - 1. This pulls it left towards its first consumer.
+                     if node.children:
+                         child_layers = [self.nodes[c].layer for c in node.children if c in self.nodes and self.nodes[c].layer is not None]
+                         if child_layers:
+                             new_layer = min(child_layers) - 1 # Using scaled child layers
+                             if new_layer != node.layer:
+                                 #logger.debug(f"Adjusting inVariable {node.local_id} layer from {node.layer} to {new_layer}")
+                                 node.layer = new_layer
+
 
     def assign_positions(self) -> None:
         """
@@ -298,12 +386,8 @@ class Locator:
                         self.process_connection(conn, node)
 
     def get_element_type(self, elem: ET.Element) -> BlockCategory:
-        if elem.tag != "block":
-            return BlockCategory.OTHER
-        tp = elem.get("typeName")
-        if tp in ['GT', 'EQ', 'GE', 'LE', 'NE', 'LT']:
-            return BlockCategory.CMP
-        return BlockCategory.OTHER
+        return classify_block_element(elem)
+        
     
     def process_connection(self, conn: ET.Element, node: Node) -> None:
         """
@@ -320,8 +404,11 @@ class Locator:
         # set the formalParameter attribute to blocks that have 2 outputs in Beremiz while only 1 output in CODESYS
         fp = conn.attrib.get("formalParameter")
         tp = self.get_element_type(node_end.element)
-        if fp == None and tp == BlockCategory.CMP:
-            conn.set("formalParameter", "OUT")
+        if fp == None:
+            if tp == BlockCategory.CMP:
+                conn.set("formalParameter", "OUT")
+            elif tp == BlockCategory.TRIG:
+                conn.set("formalParameter", "Q")
         if node_end:
             self.add_line_positions_to_connection(conn, node, node_end, fp)
 
@@ -337,6 +424,9 @@ class Locator:
         else:
             # find the node in DIMENSIONS
             dim = get_dimensions(node_end.tag, node_end.element.attrib.get("typeName"))
+            if node_end.element.attrib.get("typeName") == 'Q':
+                logger.warning(f"Q type found in connection, tag is{node_end.tag}")
+
             if formalParamater in dim:
                 end_y = node_end.y + dim[formalParamater]
             else:

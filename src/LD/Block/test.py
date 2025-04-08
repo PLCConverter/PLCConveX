@@ -70,7 +70,8 @@ class BlockCategory(Enum):
     CMP = 1
     MATH = 2
     TIMER = 3
-    OTHER = 4
+    TRIG = 4
+    OTHER = 5
 
 def classify_block(block: Block) -> BlockCategory:
     t = block.typeName.upper()
@@ -80,6 +81,21 @@ def classify_block(block: Block) -> BlockCategory:
         return BlockCategory.MATH
     elif t == "TON":
         return BlockCategory.TIMER
+    elif t in ['R_TRIG', 'F_TRIG']:
+        return BlockCategory.TRIG
+    else:
+        return BlockCategory.OTHER
+    
+def classify_block_element(elem: ET.Element) -> BlockCategory:
+    t = elem.get('typeName')
+    if t in ['GT', 'EQ', 'GE', 'LE', 'NE', 'LT']:
+        return BlockCategory.CMP
+    elif t in ['ADD', 'SUB', 'DIV', 'MUL', 'MOD', 'MOVE']:
+        return BlockCategory.MATH
+    elif t == "TON":
+        return BlockCategory.TIMER
+    elif t in ['R_TRIG', 'F_TRIG']:
+        return BlockCategory.TRIG
     else:
         return BlockCategory.OTHER
 

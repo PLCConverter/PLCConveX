@@ -15,10 +15,13 @@ OUTPUT_PATH = "../data/Outputs/plc.xml"
 VARS_PATH = "../data/Inters/vars.xml"
 POU_CHANGE_PATH = "ST/Outputs/change.txt"
 POUS_PATH = ["LD/Outputs", "ST/Outputs"]
+TASK_PATH = "Task/Outputs/tasks.xml"
 # Parse the base XML
 base_root = ET.parse(BASE_XML_PATH).getroot()
 # Parse the vars XML
 gvars_root = ET.parse(VARS_PATH).getroot()
+# Parse the tasks XML
+tasks_root = ET.parse(TASK_PATH).getroot()
 # Insert global vars to the base XML
 # First, find the <resource> tag in base XML
 
@@ -28,12 +31,24 @@ def deal_configuration(root: ET.Element) -> None:
     if root.tag != "configuration":
         logger.error(f"Root tag is {root.tag} NOT'configuration'. Failed to process configuration.")
         return
-    # TBD: insert task info
-    # insert global vars
     resource = root.find("resource")
     if resource is None:
         logger.error("Failed to find <resource> tag in configuration.")
         return
+    # insert task info
+    task_elements = tasks_root.findall("task")
+    if not task_elements:
+        logger.warning("No task elements found")
+        # leave the default task in the base XML
+    else:
+        #remove the default task in the base XML
+        default_task = resource.find("task")
+        if default_task is not None:
+            resource.remove(default_task)
+        for task_element in task_elements:
+            resource.append(task_element)
+
+    # insert global vars
     for gvar in gvars_root:
         resource.append(gvar)
 
