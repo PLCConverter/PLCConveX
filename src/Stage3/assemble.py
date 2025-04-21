@@ -16,12 +16,19 @@ VARS_PATH = "../data/Inters/vars.xml"
 POU_CHANGE_PATH = "ST/Outputs/change.txt"
 POUS_PATH = ["LD/Outputs", "ST/Outputs"]
 TASK_PATH = "Task/Outputs/tasks.xml"
+TYPE_PATH = "Type/Outputs/types.xml"
 # Parse the base XML
 base_root = ET.parse(BASE_XML_PATH).getroot()
 # Parse the vars XML
 gvars_root = ET.parse(VARS_PATH).getroot()
 # Parse the tasks XML
-tasks_root = ET.parse(TASK_PATH).getroot()
+tasks_root = None
+if os.path.exists(TASK_PATH):
+    tasks_root = ET.parse(TASK_PATH).getroot()
+# Parse the types XML
+types_root = None
+if os.path.exists(TYPE_PATH):
+    types_root = ET.parse(TYPE_PATH).getroot()
 # Insert global vars to the base XML
 # First, find the <resource> tag in base XML
 
@@ -36,7 +43,9 @@ def deal_configuration(root: ET.Element) -> None:
         logger.error("Failed to find <resource> tag in configuration.")
         return
     # insert task info
-    task_elements = tasks_root.findall("task")
+    task_elements = None
+    if tasks_root is not None:
+        task_elements = tasks_root.findall("task")
     if not task_elements:
         logger.warning("No task elements found")
         # leave the default task in the base XML
@@ -79,6 +88,26 @@ def deal_pous(root: ET.Element) -> None:
                 pou_root.set("pouType", "functionBlock")
             root.append(pou_root)
 
+def deal_types(root: ET.Element) -> None:
+    if root.tag != "types":
+        logger.error("Not <types> element!")
+
+
+    if types_root is not None:
+        dts = types_root.find("dataTypes")
+    else:
+        logger.warning("No types XML found. Using default types.")
+    # check if empty
+    if dts is None:
+        logger.warning("Failed to find <dataTypes> tag in types XML.")
+        return
+    # remove the default dataTypes in the base XML
+    base_data_types = root.find("dataTypes")
+    if base_data_types is not None:
+        root.remove(base_data_types)
+    # insert the new dataTypes to the base XML
+    root.insert(0, dts)
+
 
 def main():
     inst = base_root.find("instances")
@@ -99,6 +128,7 @@ def main():
     if types is None:
         logger.error("Failed to find <types> tag in the base XML.")
         sys.exit(1)
+    deal_types(types)
     pous = types.find("pous")
     if pous is None:
         logger.error("Failed to find <pous> tag in the base XML.")

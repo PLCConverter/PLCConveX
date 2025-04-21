@@ -37,7 +37,7 @@ gvars_path = '../data/Inters/vars.xml'
 def get_declared_vars(interface: Interface) -> set:
     # init a empty set
     all_vars = set()
-    for var_section in ['inputVars', 'localVars', 'outputVars', 'externalVars']:
+    for var_section in ['inputVars', 'inOutVars','localVars', 'outputVars', 'externalVars']:
         for var in getattr(interface, var_section):
             all_vars.add(var.name)
     return all_vars

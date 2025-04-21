@@ -22,7 +22,7 @@ build-backend = "setuptools.build_meta"
 
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = ["pytest", "poethepoet"]
 
 [project.scripts]
 clean = "clean:main"
@@ -38,3 +38,18 @@ type = "Type.process:main"
 task = "Task.process:main"
 stage3 = "Stage3.do:main"
 stage3-assemble = "Stage3.assemble:main"
+
+
+[tool.poe.tasks]
+# Define individual steps (optional but can be cleaner)
+_run_stage1 = "uv run stage1"
+_run_ld = "uv run ld"
+
+
+# Define the sequence task
+pipeline = [
+    { cmd = "uv run stage1", cwd = "src" },
+    { cmd = "uv run ld", cwd = "src" },
+    { cmd = "uv run type", cwd = "src" },
+    { cmd = "uv run stage3", cwd = "src" },
+]

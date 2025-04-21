@@ -223,6 +223,7 @@ class Position:
 class Interface:
     def __init__(self):
         self.inputVars = []
+        self.inOutVars = []
         self.localVars = []
         self.outputVars = []
         self.externalVars = []
@@ -238,6 +239,10 @@ class Interface:
             localVars_element = ET.SubElement(interface_element, 'localVars')
             for var in self.localVars:
                 localVars_element.append(var.to_xml())
+        if self.inOutVars:
+            inOutVars_element = ET.SubElement(interface_element, 'inOutVars')
+            for var in self.inOutVars:
+                inOutVars_element.append(var.to_xml())        
         if self.outputVars:
             outputVars_element = ET.SubElement(interface_element, 'outputVars')
             for var in self.outputVars:
@@ -250,14 +255,21 @@ class Interface:
     @classmethod
     def parse(cls, element):
         interface = cls()  # Create a new Interface instance
-        for var_section in ['inputVars', 'localVars', 'outputVars', 'externalVars']:
-            section_el = element.find(var_section)
-            if section_el is not None:
-                var_list = []
+        section_map = {
+            'inputVars': interface.inputVars,
+            'inOutVars': interface.inOutVars,
+            'localVars': interface.localVars,
+            'outputVars': interface.outputVars,
+            'externalVars': interface.externalVars
+        }
+        for section_name, target_list in section_map.items():
+            section_elements = element.findall(section_name)
+            for section_el in section_elements:
                 for var_el in section_el.findall('variable'):
                     var = Variable.parse(var_el)
-                    var_list.append(var)
-                setattr(interface, var_section, var_list)
+                    target_list.append(var)
+                    # append var_lst to var_sction
+
         return interface
 
 class POU:

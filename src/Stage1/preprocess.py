@@ -26,7 +26,7 @@ DEFAULT_TASK_INPUT = "../data/Inputs/TASK.xml"
 
 gv_root = ET.Element("resource")
 # Load the XML file
-input_file = "../data/Inputs/LD_COMPLEX_1.xml"
+input_file = "../data/Inputs/TARGET_1ST_GVL.xml"
 var_output = "../data/Inters/vars.xml"
 type_output = "Type/Inputs/types.xml"
 task_output = "Task/Inputs/tasks.xml"
@@ -213,7 +213,11 @@ def strip_namespace(root: ET.Element) -> str:
     return ET.tostring(root, encoding='unicode')
 
 def deal_task(input_file = DEFAULT_TASK_INPUT):
-
+    # find if the input file exists
+    if not os.path.exists(input_file):
+        logger.warning(f"Input file {input_file} does not exist. Skipping task processing.")
+        return
+    
     root = ET.parse(input_file).getroot()
     # strip the namespace
     modified_xml = strip_namespace(root)
