@@ -34,6 +34,13 @@ def main():
     files = glob.glob("Task/Outputs/*.xml")
     for full_path in files:
         os.remove(full_path)
+    # clean Type
+    files = glob.glob("Type/Inputs/*.xml")
+    for full_path in files:
+        os.remove(full_path)
+    files = glob.glob("Type/Outputs/*.xml")
+    for full_path in files:
+        os.remove(full_path)
 
 if __name__ == "__main__":
     main()
