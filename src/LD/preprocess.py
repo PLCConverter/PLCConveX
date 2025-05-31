@@ -1,6 +1,9 @@
 import xml.etree.ElementTree as ET
 import argparse
 
+from Logs.colorLogger import get_color_logger
+logger = get_color_logger("LD/Preprocess")
+
 # Define the elements to be removed
 # !!! WARNING: vendorElement maybe reinstated in the future !!!
 GLOBAL_SLASH_LIST = ["addData", "rightPowerRail", "vendorElement"]
@@ -32,7 +35,7 @@ def convert_formal_parameter(elem: ET.Element) -> None:
             if fp is not None:
                 fp_list.append(fp)
         if "In3" in fp_list:
-            print("Converting formalParameter 'In3' to 'IN2', 'In2' to 'IN1'.")
+            logger.debug("Converting formalParameter 'In3' to 'IN2', 'In2' to 'IN1'.")
             for var in var_list:
                 if var.get("formalParameter") == "In2":
                     var.set("formalParameter", "IN1")
@@ -41,7 +44,7 @@ def convert_formal_parameter(elem: ET.Element) -> None:
         else:
             for var in var_list:
                 if var.get("formalParameter") == "In2":
-                    print("Converting formalParameter 'In2' to 'IN'.")
+                    logger.debug("Converting formalParameter 'In2' to 'IN'.")
                     var.set("formalParameter", "IN")
         return
     
@@ -49,7 +52,7 @@ def convert_formal_parameter(elem: ET.Element) -> None:
     if fp is None:
         return
     if fp in FORMALPARAMETER_MAP:
-        print(f"Converting formalParameter '{fp}' to '{FORMALPARAMETER_MAP[fp]}'.")
+        logger.debug(f"Converting formalParameter '{fp}' to '{FORMALPARAMETER_MAP[fp]}'.")
         elem.set("formalParameter", FORMALPARAMETER_MAP[fp])
 
 def convert_fp_tree(root: ET.Element):
@@ -69,7 +72,7 @@ def process_xml(input_file, output_file):
     convert_fp_tree(root)
     
     tree.write(output_file, encoding="utf-8", xml_declaration=False)
-    print(f"Processed XML saved to {output_file}")
+    logger.info(f"Processed XML saved to {output_file}")
 
 def main():
     parser = argparse.ArgumentParser(
@@ -91,7 +94,7 @@ def main():
         # input like : "LD/Inputs/T_xxxx.xml"
         # generate output path like : "LD/Inters/T_xxxx_preprocess.xml"
         args.output = args.input.replace("Inputs", "Inters").replace(".xml", "_preprocess.xml")
-        print(args.output)
+        logger.debug(args.output)
     process_xml(args.input, args.output)
 
 if __name__ == "__main__":

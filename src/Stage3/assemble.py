@@ -92,7 +92,7 @@ def deal_types(root: ET.Element) -> None:
     if root.tag != "types":
         logger.error("Not <types> element!")
 
-
+    dts = None
     if types_root is not None:
         dts = types_root.find("dataTypes")
     else:
