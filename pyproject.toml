@@ -34,6 +34,7 @@ ld-clean = "LD.clean:main"
 ld = "LD.do:main"
 st-syntax = "ST.syntax:main"
 st-clean = "ST.clean:main"
+st = "ST.do:main"
 type = "Type.process:main"
 task = "Task.process:main"
 stage3 = "Stage3.do:main"
@@ -45,11 +46,14 @@ stage3-assemble = "Stage3.assemble:main"
 _run_stage1 = "uv run stage1"
 _run_ld = "uv run ld"
 
-
-# Define the sequence task
-pipeline = [
-    { cmd = "uv run stage1", cwd = "src" },
-    { cmd = "uv run ld", cwd = "src" },
-    { cmd = "uv run type", cwd = "src" },
-    { cmd = "uv run stage3", cwd = "src" },
+[tool.poe.tasks.pipeline]
+# Arguments for the 'pipeline' task are defined under the 'args' key within this table
+args = { input = { options = ["-i", "--input"], help = "Path to the input file for stage1" } }
+# The actual sequence of commands goes under the 'sequence' key
+sequence = [
+{ cmd = "uv run clean", cwd = "src" },
+{ cmd = "uv run stage1 -i ${input}", cwd = "src" }, # Use ${input} to substitute the argument value
+{ cmd = "uv run ld", cwd = "src" },
+{ cmd = "uv run st", cwd = "src" },
+{ cmd = "uv run stage3", cwd = "src" },
 ]

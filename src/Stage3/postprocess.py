@@ -12,18 +12,20 @@ logger = get_color_logger("postprocess.py")
 
 
 FILE_PATH = "../data/Outputs/plc.xml"
+FINAL_PATH = "D:/PLCworks/result/plc.xml"
 REPLACE_TAG = {
     "xhtml":"xhtml:p"
 }
 REPLACE_PLACEHOLDER = {
     "__GT_PLACEHOLDER__":"]]>",
     "__LT_PLACEHOLDER__":"<![CDATA[",
+    "&lt;":"<",
+    "&gt;":">"
 }
 
 def replace_placeholders(text):
     # Combine both replacement dictionaries
     replace_dict = {**REPLACE_TAG, **REPLACE_PLACEHOLDER}
-    
     # Create a regex pattern that matches any key
     pattern = '|'.join(re.escape(key) for key in replace_dict.keys())
     
@@ -43,7 +45,7 @@ def add_namespaces(text):
     return re.sub(r'<project', f'<project {text_namespace}', text, count=1)
     
   
-def main(input_file = FILE_PATH, output_file = FILE_PATH):
+def main(input_file = FILE_PATH, output_file = FINAL_PATH):
     # read input xml file as string
     with open(input_file, "r") as f:
         xml_str = f.read()
@@ -53,6 +55,7 @@ def main(input_file = FILE_PATH, output_file = FILE_PATH):
     # write the modified string to the output file
     with open(output_file, "w") as f:
         f.write(xml_str)
-    
+    logger.info(f"Final result written to {output_file}")
+
 if __name__ == "__main__":  
     main()

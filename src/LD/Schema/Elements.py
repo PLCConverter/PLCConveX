@@ -63,6 +63,8 @@ class Variable:
             if self.type is not None:
                 type_element = ET.SubElement(var_element, 'type')
                 type_element.append(self.type.to_xml())
+            if self.initialValue is not None:
+                var_element.append(self.initialValue.to_xml())
         elif self.formalParameter is not None:
             var_element = ET.Element('variable')
             var_element.set('formalParameter', self.formalParameter)
@@ -735,6 +737,8 @@ class InVariable:
         expr_el = element.find('expression')
         if expr_el is not None and expr_el.text is not None:
             inVar.expression = Expression(expr_el.text)
+        else:
+            inVar.expression = Expression("")
         try:
             id_val = int(localId)
             global_max_id = get_value()

@@ -1,3 +1,4 @@
+import argparse
 import sys
 sys.path.append("../")
 import os
@@ -26,7 +27,7 @@ DEFAULT_TASK_INPUT = "../data/Inputs/TASK.xml"
 
 gv_root = ET.Element("resource")
 # Load the XML file
-input_file = "../data/Inputs/TARGET_1ST_GVL.xml"
+DEFAULT_INPUT = "../data/Inputs/PIDControl.xml"
 var_output = "../data/Inters/vars.xml"
 type_output = "Type/Inputs/types.xml"
 task_output = "Task/Inputs/tasks.xml"
@@ -272,7 +273,7 @@ def convert_fp_tree(root: ET.Element):
 
 
 # start of main
-def main():
+def main_routine(input_file):
     tree = ET.parse(input_file)
     root = tree.getroot()
     
@@ -290,3 +291,24 @@ def main():
     # deal with task elements FROM ANOTHER FILE
     deal_task(DEFAULT_TASK_INPUT)
     # TBD: extract configuration elements           
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Designate the source project file to convert."
+    )
+    parser.add_argument(
+        '-i', '--input',
+        default=DEFAULT_INPUT,
+        help='Input source project file path (default: %(default)s)'
+    )
+
+    args = parser.parse_args()
+    input_file = args.input
+    if not os.path.exists(input_file):
+        logger.error(f"Input file {input_file} does not exist. Exiting.")
+        sys.exit(1)
+
+    main_routine(input_file)
+
+if __name__ == "__main__":
+    main()

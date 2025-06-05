@@ -14,7 +14,7 @@ from Logs.colorLogger import get_color_logger
 logger = get_color_logger("ST_Syntax")
 
 gvars_path = '../data/Inters/vars.xml'
-DEFAULT_INPUT = 'ST/Inputs/T_PLC_PRG.xml'
+DEFAULT_INPUT = 'ST/Inputs/fuck.xml'
 DEFAULT_OUTPUT = 'ST/Outputs/T_test.xml'
 IDENTIFIER_PATTERN = re.compile(
     r"(?:[a-zA-Z]|_(?:[a-zA-Z]|[0-9]))(?:_?(?:[a-zA-Z]|[0-9]))*"
@@ -78,13 +78,12 @@ def find_non_standard_functions(st_string):
     
     Args:
         st_string (str): The Structured Text string to analyze.
-        standard_function_names (list or set): Collection of standard function names.
     
     Returns:
         list: List of tuples (function_name, start_pos, end_pos) for non-standard calls.
     """
     # Convert standard function names to a set for O(1) lookups
-    standard_functions = set(STANDARD_FUNCTIONS)
+    standard_functions = set(STANDARD_FUNCTIONS + ST_KEYWORDS)
     
     # Define the pattern for a function call: word followed by parentheses with content
     # \b ensures we match whole words
@@ -152,6 +151,11 @@ def extract_variable_identifiers(code):
         
         # Process potential variable identifiers
         if is_identifier(token) and not is_keyword(token) and not tokenize_literals(token):
+            # MODIFICATION: If prev_token was '.', then 'token' is an attribute, not a standalone variable.
+            if prev_token == '.':
+                logger.debug(f"Skipping attribute '{token}' as it follows '.'. prev_token='{prev_token}'")
+                continue
+            # Original logic for identifying variables/parameters:
             if in_function_call:
                 # Case 1: Identifier after ':=' or '=>' is a variable
                 logger.debug(f"current token: {token}, prev token: {prev_token}")
@@ -224,11 +228,17 @@ def add_missing_vars(exist_vars, all_vars, interface: Interface):
                 else:
                     logger.warning(f"Found variable without name: {var}")
 
-
+def remove_comments(code):
+    # Remove multi-line comments  (* ... *)
+    # The DOTALL flag makes '.' match newlines as well.
+    # Non-greedy '.*?' ensures it matches the shortest possible block.
+    code = re.sub(r'\(\*.*?\*\)', '', code, flags=re.DOTALL)
+    # Remove single-line comments // ...
+    code = re.sub(r'//.*', '', code)
+    return code
 
 # Example usage
 def process_xml(input_file, output_file):
-    logger.warning(f"{is_identifier('func')}")
     with open(input_file, 'r', encoding='utf-8') as f:
         xml_string = f.read()
     root = ET.fromstring(xml_string.strip())
@@ -252,6 +262,7 @@ def process_xml(input_file, output_file):
 
     # Extract variable identifiers from the ST code
     code = pou.body.ST.xhtml
+    code = remove_comments(code)
     variable_identifiers = extract_variable_identifiers(code)
     logger.debug(f"Variable identifiers: {variable_identifiers}")
 
@@ -266,7 +277,7 @@ def process_xml(input_file, output_file):
     create_func_instance(pou.interface, pou_to_change_type)
     modify_ST_func_call(pou.body.ST, pou_to_change_type)
     # write pou_to_change_type to an output file
-    with open("ST/Outputs/change.txt", 'w', encoding='utf-8') as f:
+    with open("ST/Outputs/change.txt", 'a', encoding='utf-8') as f:
         f.write("\n".join(pou_to_change_type))
     
     # add missing vars
@@ -300,6 +311,9 @@ def main():
     
     args = parser.parse_args()
     if args.input != DEFAULT_INPUT and args.output == DEFAULT_OUTPUT:
-        args.output = args.input.replace("_preprocess", "_intermediate")
+        args.output = args.input.replace("_preprocess", "_out").replace("Inters", "Outputs")
         logger.debug(f"Output file path: {args.output}")
     process_xml(args.input, args.output)
+
+if __name__ == "__main__":
+    main()
