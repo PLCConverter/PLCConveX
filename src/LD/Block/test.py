@@ -56,6 +56,8 @@ def get_all_vars(LD: LD) -> set:
             else:
                 logger.warning(f"Contact element without variable: {elem}")
         elif isinstance(elem, Block):
+            if elem.instanceName is not None:
+                all_vars.add(elem.instanceName)
             exps = elem.get_expressions()
             for exp in exps:
                 if exp is not None:
